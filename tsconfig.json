@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+        // "watch": true,
+        "module": "CommonJS",
+        "outDir": "./dist",
+        "target": "ESNext",
+        "strict": true,
+        "esModuleInterop":true
+    }
+}
