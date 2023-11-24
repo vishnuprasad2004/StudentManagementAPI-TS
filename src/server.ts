@@ -1,15 +1,31 @@
-import express, { Express, Request, Response } from "express"
+import express, {Express, Request, Response} from "express"
 // import dotenv from "dotenv";
-
+// const express = require("express")
+// const {Express, Request, Response} = require("@types/express")
 // dotenv.config();
 
-const app: Express = express();
-const PORT = 8080;
+const app = express();
+const PORT = process.env.PORT || 8080;
 
-app.get("/", (req: Request, res: Response) => {
-    res.status(200).json({"message":"Hello World"})
+type Student = {
+    "name":String,
+    "age":number,
+    "rollno":String,
+    "phoneNumber":number
+}
+
+app.get("/", (req:Request, res:Response) => {
+    let s1:Student = {
+        "name":"gug",
+        "age":12,
+        "phoneNumber":123456,
+        "rollno":"22cseaiml122"
+    }
+    
+
 });
 
 app.listen(PORT,() => {
     console.log(`SERVER: listening on http://localhost${PORT}`)
 })
+console.log("Hello World");
