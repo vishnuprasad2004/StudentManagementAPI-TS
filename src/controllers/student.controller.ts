@@ -27,9 +27,41 @@ export async function getStudent(req: Request, res: Response) {
     }
 }
 
-
-
 export async function getStudents(req: Request, res: Response) {
+    try {
+        const { department, gender } = req.query
+        let students = []
+
+        // getting students of a particular department and gender 
+        if(department && gender) {
+            students = await Student.find({ $and: [{ department: department }, { gender: gender }] })
+            console.log(students);
+            res.status(200).json(students);
+            return
+        }
+        // getting students of a particular department only
+        if(department) {
+            students = await Student.find({ department: department })
+            console.log(students);
+            res.status(200).json(students);
+            return
+        }
+        // getting students of a particular gender only
+        if(department) {
+            students = await Student.find({ gender:gender })
+            console.log(students);
+            res.status(200).json(students);
+            return
+        }
+
+    } catch(error: any) {
+
+        console.log(error.message);
+        res.status(404).json({ message: error.message });
+    }
+}
+
+export async function getAllStudents(req: Request, res: Response) {
     try {
 
         const students = await Student.find();
@@ -51,7 +83,7 @@ export async function getStudents(req: Request, res: Response) {
 export async function createStudent(req: Request, res: Response) {
     try {
         // get the data
-        const { name, rollno, department, email }: StudentData = req.body;
+        const { name, rollno, department, email, gender, cgpa }: StudentData = req.body;
         if (!name || !email || !rollno || !department) {
             res.status(400).json({ message: "All fields are Mandatory!!" });
         }
@@ -61,6 +93,8 @@ export async function createStudent(req: Request, res: Response) {
             email,
             rollno,
             department,
+            gender,
+            cgpa
         });
         res.status(201).json({ message: "created student", addedStudent: newStudent });
     } catch (error: any) {

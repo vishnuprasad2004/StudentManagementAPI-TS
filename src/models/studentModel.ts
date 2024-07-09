@@ -34,6 +34,7 @@ const StudentSchema = new mongoose.Schema({
     },
     cgpa: {
         type: Number,
+        required: [true, "Please add your CGPA"],
         min: 0,
         max: 10,
     },
