@@ -6,6 +6,8 @@ type StudentData = {
     email: string;
     rollno: string;
     department: string;
+    gender: string;
+    cgpa: Number;
 };
 
 export async function getStudent(req: Request, res: Response) {
