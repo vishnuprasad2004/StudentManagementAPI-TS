@@ -4,185 +4,250 @@ This API allows for the management of student records, including creating, readi
 
 ## Endpoints
 
-### 1. Get Student by Roll Number
+### Get a Student by Roll Number
 
-**Endpoint:** `GET /students/:rollno`
+#### GET `/api/students/:rollno`
 
-**Description:** Retrieves a student record by their roll number.
+**Description**: Retrieves a student by their roll number.
 
-**Parameters:**
+**Parameters**:
 
-- `rollno` (string) - The roll number of the student to retrieve.
+- `rollno` (string, required): The roll number of the student to retrieve.
 
-**Responses:**
+**Response**:
 
-- **200 OK:** Returns the student record.
+- `200 OK`: Returns the student data.
+- `404 Not Found`: If the student is not found.
 
-  ```json
-  [
-      {
-          "name": "John Doe",
-          "email": "john.doe@example.com",
-          "rollno": "12345",
-          "department": "Computer Science"
-      }
-  ]
-  ```
+**Example Request**:
 
-- **404 Not Found:** Student not found.
+```http
+GET /api/students/21cse203 HTTP/1.1
+```
 
-  ```json
-  {
-      "message": "Student not Found"
-  }
-  ```
+**Example Response**:
 
-### 2. Get All Students
+```json
+{
+    "_id": "60d5ec49db3a6e4898e5b9e1",
+    "name": "Akash Kumar Patro",
+    "email": "21cse203.akashkumarpatro@giet.edu",
+    "rollno": "21cse203",
+    "department": "CSE",
+    "gender": "Male",
+    "cgpa": 8.5
+}
+```
 
-**Endpoint:** `GET /students`
+### Get Students by Query
 
-**Description:** Retrieves all student records.
+#### GET `/api/students/q`
 
-**Responses:**
+**Description**: Retrieves students based on department and/or gender.
 
-- **200 OK:** Returns a list of all student records.
+**Query Parameters**:
 
-  ```json
-  [
-      {
-          "name": "John Doe",
-          "email": "john.doe@example.com",
-          "rollno": "12345",
-          "department": "Computer Science"
-      },
-      {
-          "name": "Jane Smith",
-          "email": "jane.smith@example.com",
-          "rollno": "67890",
-          "department": "Mechanical Engineering"
-      }
-  ]
-  ```
+- `department` (string, optional): The department of the students to retrieve.
+- `gender` (string, optional): The gender of the students to retrieve.
 
-- **404 Not Found:** No students found.
+**Response**:
 
-  ```json
-  {
-      "message": "Student not Found"
-  }
-  ```
+- `200 OK`: Returns the list of students matching the query.
+- `404 Not Found`: If no students are found.
 
-### 3. Create Student
+**Example Request**:
 
-**Endpoint:** `POST /students`
+```http
+GET /api/students/q?department=CSE&gender=Male HTTP/1.1
+```
 
-**Description:** Creates a new student record.
+**Example Response**:
 
-**Request Body:**
+```json
+[
+    {
+        "_id": "60d5ec49db3a6e4898e5b9e1",
+        "name": "Akash Kumar Patro",
+        "email": "21cse203.akashkumarpatro@giet.edu",
+        "rollno": "21cse203",
+        "department": "CSE",
+        "gender": "Male",
+        "cgpa": 8.5
+    }
+]
+```
 
-- `name` (string) - Name of the student.
-- `email` (string) - Email of the student.
-- `rollno` (string) - Roll number of the student.
-- `department` (string) - Department of the student.
+### Get All Students
 
-**Responses:**
+#### GET `/api/students`
 
-- **201 Created:** Student record created successfully.
+**Description**: Retrieves all students.
 
-  ```json
-  {
-      "message": "created student",
-      "addedStudent": {
-          "name": "John Doe",
-          "email": "john.doe@example.com",
-          "rollno": "12345",
-          "department": "Computer Science"
-      }
-  }
-  ```
+**Response**:
 
-- **400 Bad Request:** Missing mandatory fields.
+- `200 OK`: Returns the list of all students.
+- `404 Not Found`: If no students are found.
 
-  ```json
-  {
-      "message": "All fields are Mandatory!!"
-  }
-  ```
+**Example Request**:
 
-- **404 Not Found:** Error creating student.
+```http
+GET /api/students HTTP/1.1
+```
 
-  ```json
-  {
-      "message": "Error message"
-  }
-  ```
+**Example Response**:
 
-### 4. Update Student
+```json
+[
+    {
+        "_id": "60d5ec49db3a6e4898e5b9e1",
+        "name": "Akash Kumar Patro",
+        "email": "21cse203.akashkumarpatro@giet.edu",
+        "rollno": "21cse203",
+        "department": "CSE",
+        "gender": "Male",
+        "cgpa": 8.5
+    },
+    {
+        "_id": "60d5ec49db3a6e4898e5b9e2",
+        "name": "Prakute Kumari",
+        "email": "23me120.prakutekumari@giet.edu",
+        "rollno": "23me120",
+        "department": "ME",
+        "gender": "Female",
+        "cgpa": 9.0
+    }
+]
+```
 
-**Endpoint:** `PUT /students/:rollno`
+### Create a Student
 
-**Description:** Updates a student record by their roll number.
+#### POST `/api/students`
 
-**Parameters:**
+**Description**: Creates a new student.
 
-- `rollno` (string) - The roll number of the student to update.
+**Request Body**:
 
-**Request Body:** Fields to update (name, email, department).
+- `name` (string, required): The name of the student.
+- `email` (string, required): The email of the student.
+- `rollno` (string, required): The roll number of the student.
+- `department` (string, required): The department of the student.
+- `gender` (string, required): The gender of the student.
+- `cgpa` (number, required): The CGPA of the student.
 
-**Responses:**
+**Response**:
 
-- **200 OK:** Student record updated successfully.
+- `201 Created`: Returns the created student data.
+- `400 Bad Request`: If any required fields are missing.
+- `404 Not Found`: If there's an error creating the student.
 
-  ```json
-  {
-      "message": "update student data with 12345",
-      "update": {
-          "name": "John Doe",
-          "email": "john.doe@example.com",
-          "rollno": "12345",
-          "department": "Computer Science"
-      }
-  }
-  ```
+**Example Request**:
 
-- **404 Not Found:** Student not found.
+```http
+POST /api/students HTTP/1.1
+Content-Type: application/json
 
-  ```json
-  {
-      "message": "Student not Found"
-  }
-  ```
+{
+    "name": "Akash Kumar Patro",
+    "email": "21cse203.akashkumarpatro@giet.edu",
+    "rollno": "21cse203",
+    "department": "CSE",
+    "gender": "Male",
+    "cgpa": 8.5
+}
+```
 
-### 5. Delete Student
+**Example Response**:
 
-**Endpoint:** `DELETE /students/:rollno`
+```json
+{
+    "message": "created student",
+    "addedStudent": {
+        "_id": "60d5ec49db3a6e4898e5b9e1",
+        "name": "Akash Kumar Patro",
+        "email": "21cse203.akashkumarpatro@giet.edu",
+        "rollno": "21cse203",
+        "department": "CSE",
+        "gender": "Male",
+        "cgpa": 8.5
+    }
+}
+```
 
-**Description:** Deletes a student record by their roll number.
+### Update a Student
 
-**Parameters:**
+#### PUT `/api/students/:rollno`
 
-- `rollno` (string) - The roll number of the student to delete.
+**Description**: Updates an existing student by their roll number.
 
-**Responses:**
+**Parameters**:
 
-- **200 OK:** Student record deleted successfully.
+- `rollno` (string, required): The roll number of the student to update.
 
-  ```json
-  {
-      "message": "deleted student",
-      "student": {
-          "name": "John Doe",
-          "email": "john.doe@example.com",
-          "rollno": "12345",
-          "department": "Computer Science"
-      }
-  }
-  ```
+**Request Body**: Any fields that need to be updated (e.g., `name`, `email`, `department`, etc.)
 
-- **404 Not Found:** Student not found.
+**Response**:
 
-  ```json
-  {
-      "message": "Student Not Found"
-  }
-  ```
+- `200 OK`: Returns the updated student data.
+- `404 Not Found`: If the student is not found.
+
+**Example Request**:
+
+```http
+PUT /api/students/21cse203 HTTP/1.1
+Content-Type: application/json
+
+{
+    "cgpa": 8.7
+}
+```
+
+**Example Response**:
+
+```json
+{
+    "message": "update student data with 21cse203",
+    "update": {
+        "n": 1,
+        "nModified": 1,
+        "ok": 1
+    }
+}
+```
+
+### Delete a Student
+
+#### DELETE `/api/students/:rollno`
+
+**Description**: Deletes a student by their roll number.
+
+**Parameters**:
+
+- `rollno` (string, required): The roll number of the student to delete.
+
+**Response**:
+
+- `200 OK`: Returns a message confirming the deletion.
+- `404 Not Found`: If the student is not found.
+
+**Example Request**:
+
+```http
+DELETE /api/students/21cse203 HTTP/1.1
+```
+
+**Example Response**:
+
+```json
+{
+    "message": "deleted student",
+    "student": {
+        "n": 1,
+        "ok": 1,
+        "deletedCount": 1
+    }
+}
+```
+
+---
+
+This documentation covers the endpoints for managing student data, including creating, retrieving, updating, and deleting students, with query options for filtering by department and gender.
