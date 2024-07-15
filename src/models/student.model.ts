@@ -26,10 +26,17 @@ const StudentSchema = new mongoose.Schema({
         type: String,
         unique: true,
         required: [true, "Please add the Roll Number"],
+        validate: {
+            validator: function (v: string) {
+                return /^\d{2}[a-z]{2,7}\d{3,4}$/.test(v);
+            },
+            message: (props: any) => `${props.value} is not a valid official email!`
+        }
         
     },
     department: {
-        type: String,
+        type: mongoose.Types.ObjectId,
+        ref: "Department",
         required: [true, "Please add the department"],
     },
     cgpa: {
