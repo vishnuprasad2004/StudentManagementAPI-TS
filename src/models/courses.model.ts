@@ -1,6 +1,12 @@
 import mongoose from "mongoose";
 
 const CourseSchema = new mongoose.Schema({
+    courseId: {
+        type: String,
+        trim:true,
+        unique: true,
+        required: [true, "Please add the course ID"],  
+    },
     title: {
         type: String,
         unique: true,
