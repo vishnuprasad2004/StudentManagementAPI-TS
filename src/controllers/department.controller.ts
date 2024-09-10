@@ -3,7 +3,10 @@ import Department from "../models/department.model";
 
 export async function getDepartment(req: Request, res: Response) {
     try {
-        const department = await Department.find({ name: req.params.name });
+        const department = await Department.find({ name: req.params.name })
+            .populate("instructors")
+            .populate("courses")
+            .exec();
         if (department.length == 0) {
             throw new Error("Department not Found");
         }
@@ -12,7 +15,7 @@ export async function getDepartment(req: Request, res: Response) {
 
     } catch (error: any) {
 
-        console.log(error.message);
+        console.log(error);
         res.status(404).json({ message: error.message });
     }
 }
@@ -37,8 +40,17 @@ export async function getAllDepartments(req: Request, res: Response) {
     }
 }
 
+/**
+ * @param req 
+ *  name: Name of the Department, ex: CSE, ME, CHE,
+ *  head: insrtuctorId
+ */
 export async function addDepartment(req: Request, res: Response) {
     try {
+        const {name, head} = req.body;
+        if([name, head].some((e) => e === undefined)) {
+
+        }
         const department = await Department.create(req.body);
         console.log(department);
         res.status(201).json(department);

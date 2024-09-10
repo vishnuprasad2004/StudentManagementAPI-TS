@@ -10,7 +10,7 @@ const DepartmentSchema = new mongoose.Schema({
     head: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Instructor",
-        required: [true, "Please add the head of the department"],
+        // required: [true, "Please add the head of the department"],
     },
     instructors: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -24,6 +24,6 @@ const DepartmentSchema = new mongoose.Schema({
     
 });
 
-const Department = mongoose.models.users || mongoose.model('departments', DepartmentSchema);
+const Department = mongoose.models.departments || mongoose.model('departments', DepartmentSchema);
 
 export default Department;

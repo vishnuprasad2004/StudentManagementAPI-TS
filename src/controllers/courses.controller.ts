@@ -4,7 +4,7 @@ import Instructor from '../models/instructor.model';
 import Department from '../models/department.model';
 
 
-export async function getCourse(req: Request, res: Response) {
+export async function getCourseDetails(req: Request, res: Response) {
     try {
         const course = await Course.find({ name: req.params.name });
         if (course.length == 0) {
@@ -21,7 +21,7 @@ export async function getCourse(req: Request, res: Response) {
 }
 
 
-export async function getAllCourses(req: Request, res: Response) {
+export async function getAllCoursesDetails(req: Request, res: Response) {
     try {
         const courses = await Course.find();
         if (courses.length == 0) {
@@ -55,7 +55,14 @@ export async function getAllCourses(req: Request, res: Response) {
 // }
 
 /**
+ * @param req
+ * @param res
  * Add a new course to the database
+ * title:
+ * description:
+ * creditScore:
+ * intructorId:
+ * department: 
  */
 export async function addCourse(req: Request, res: Response) {
     try {
@@ -73,6 +80,9 @@ export async function addCourse(req: Request, res: Response) {
         if(!dept) {
             throw new Error("Department not Found, wrong department name");
         }
+        
+        const newDept = await Department.updateOne({name: department}, {...department, courses: [...department.courses, title]}, {new: true});
+
 
         const newCourse = await Course.create({
             title,
@@ -82,7 +92,7 @@ export async function addCourse(req: Request, res: Response) {
             department: dept._id
         })
 
-        res.status(201).json({ message: "Course created", addedCourse: newCourse });
+        res.status(201).json({ message: "Course created, also added the course in the resp. Department", addedCourse: newCourse });
 
     } catch (error: any) {
         console.log(error.message);

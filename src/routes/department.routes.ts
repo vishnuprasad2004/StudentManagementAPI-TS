@@ -1,11 +1,12 @@
 import { Router } from "express";
+import { addDepartment, getAllDepartments, getDepartment } from "../controllers/department.controller";
 
 const router = Router();
 
-router.route("/").get();
-router.route("/").post();
+router.route("/").get(getAllDepartments);
+router.route("/").post(addDepartment);
 router.route("/q").get();
-router.route("/:rollno").get();
+router.route("/:name").get(getDepartment);
 router.route("/:rollno").put();
 router.route("/:rollno").delete();
 

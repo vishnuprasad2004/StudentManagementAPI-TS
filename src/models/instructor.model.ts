@@ -1,13 +1,13 @@
 import mongoose from "mongoose";
 
 const InstructorSchema = new mongoose.Schema({ 
-    intructorId: {
+    instructorId: {
         type: String,
         unique: true,
         required: [true, "Please add the instructor ID"],
         validate: {
             validator: function (v: string) {
-                return /^[A-Z]{5,15}[0-9]{1,4}$/.test(v);
+                return /^[A-Z]{3,7}[0-9]{1,4}$/.test(v);
             },
             message: (props: any) => `${props.value} is not a valid instructor ID!`
         }
@@ -28,12 +28,12 @@ const InstructorSchema = new mongoose.Schema({
             message: (props: any) => `${props.value} is not a valid instuctor official email!`
         }
     },
-    department: {
+    departmentId: {
         type: mongoose.Types.ObjectId,
         ref: "Department",
     }
 });
 
-const Instructor = mongoose.models.users || mongoose.model('instructors', InstructorSchema);
+const Instructor = mongoose.models.instructors || mongoose.model('instructors', InstructorSchema);
 
 export default Instructor;
