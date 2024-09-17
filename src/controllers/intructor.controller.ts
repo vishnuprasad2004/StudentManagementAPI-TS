@@ -47,6 +47,7 @@ export async function createInstructor(req: Request, res: Response) {
             throw new Error("Please provide all the details");
         }
 
+        // creating a transaction (multiple operations as a single unit of work, it can either succeed or fail)
         const session = await mongoose.startSession();
         session.startTransaction();
 
@@ -61,7 +62,6 @@ export async function createInstructor(req: Request, res: Response) {
 
         await Department.findOneAndUpdate({ name: departmentName }, { $push: { instructors: instructor._id } });
         res.status(201).json({message:"Instructor created", data: instructor});
-
 
 
         await session.commitTransaction();

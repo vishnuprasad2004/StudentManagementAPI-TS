@@ -78,6 +78,27 @@ export async function getAllStudents(req: Request, res: Response) {
     }
 }
 
+export async function getStudentsMetaData(req: Request, res: Response) {
+    try {
+
+        const groupedRes = await Student.aggregate([{
+            $group: {
+                _id: "$department",
+                count: { $sum: 1 }
+            }
+        },{
+            $sort: {
+                count: -1
+            }
+        }])
+        console.log(groupedRes);
+        res.status(200).json(groupedRes);
+
+    } catch(error: any) {
+        console.log(error.message);
+        res.status(404).json({ message: error.message });
+    }
+}
 
 
 export async function createStudent(req: Request, res: Response) {

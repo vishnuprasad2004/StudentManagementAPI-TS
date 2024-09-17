@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import Department from "../models/department.model";
+import Instructor from "../models/instructor.model";
+import mongoose from "mongoose";
 
 export async function getDepartment(req: Request, res: Response) {
     try {
-        const department = await Department.find({ name: req.params.name })
+        const department = await Department.find({ name: req.params.departmentName })
             .populate("instructors")
             .populate("courses")
             .exec();
@@ -59,4 +61,34 @@ export async function addDepartment(req: Request, res: Response) {
         console.log(error.message);
         res.status(400).json({ message: error.message });
     }
+}
+
+/**
+ * This will be only used when the head of the department is changed 
+ * @param req Department Name, Head of the Department InstructorId
+ */
+export async function updateDepartmentDetails(req:Request, res: Response) {
+    try {
+        const session = await mongoose.startSession()
+        session.startTransaction()
+        const department = await Department.find({ name: req.params.departmentName });
+        if (department.length == 0) {
+            throw new Error("Department not Found");
+        }
+
+        const headInstructor = await Instructor.findOne({ instructorId: req.body.headInstructorId });
+        if (!headInstructor) {
+            throw new Error("Instructor not Found");
+        }
+        await Department.findOneAndUpdate({ name: req.params.departmentName }, {$set: { head: headInstructor._id } });
+        
+        res.status(200).json({ message: `updated the head of the department to ${headInstructor.name}`});
+
+        await session.commitTransaction();
+        session.endSession();
+    } catch (error: any) {
+        console.log(error.message);
+        res.status(404).json({ message: error.message });
+    }
+
 }
