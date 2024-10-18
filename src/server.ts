@@ -18,6 +18,8 @@ app.use("/api/departments", deptRouter);
 app.use("/api/instructors", intructorRouter);
 app.use("/api/courses", courseRouter);
 
-app.listen(PORT, () => {
-  console.log(`[SERVER]: listening on http://localhost:${PORT}`);
-});
+// app.listen(PORT, () => {
+//   console.log(`[SERVER]: listening on http://localhost:${PORT}`);
+// });
+
+export default app;

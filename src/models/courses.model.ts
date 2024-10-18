@@ -35,7 +35,7 @@ const CourseSchema = new mongoose.Schema({
         required: [true, "Please add the department"]
     },
     
-});
+}, { timestamps: true });
 
 
 const Course = mongoose.models.users || mongoose.model('courses', CourseSchema);
