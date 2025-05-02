@@ -45,6 +45,11 @@ const StudentSchema = new mongoose.Schema({
         min: 0,
         max: 10,
     },
+    password: {
+        type: String,
+        required: [true, "Please add a password"],
+        min: 4
+    }
 }, {
     timestamps: true
 });

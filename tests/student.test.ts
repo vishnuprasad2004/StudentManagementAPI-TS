@@ -1,22 +1,23 @@
-import app from "../src/server";
+import app from "../src/app";
 import request from "supertest";
 import mongoose from 'mongoose';
-import exp from "constants";
+import connectDB from "../src/db";
 
 
 const originalLog = console.log;
 
 describe('Student API Endpoints', () => {
 
-    beforeAll(() => {
+    beforeAll(async() => {
         // Suppress all console logs
+        await connectDB();
         console.log = jest.fn();
     });
 
     it('should return a 200 status for GET /api/students', async () => {
         const res = await request(app).get('/api/students');
         expect(res.statusCode).toEqual(200);
-        expect(Array.isArray(res.body.data)).toBe(true);
+        expect(Array.isArray(res.body.message)).toBe("All Students found");
 
     });
 
@@ -45,7 +46,7 @@ describe('Student API Endpoints', () => {
         expect(Array.isArray(res.body.data)).toBe(true);
     })
 
-    it("should return a 200 status for POST /api/students/", async () => {
+    it("should return a 404 status for POST /api/students/", async () => {
         const res = await request(app).post('/api/students').send({
             "rollno": "22CSEAIML006",
             "name": "John Doe",

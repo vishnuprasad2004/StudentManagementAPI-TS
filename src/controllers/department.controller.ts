@@ -36,6 +36,10 @@ export async function getDepartment(req: Request, res: Response) {
                     "instructors.departmentId": 0,
                     "instructors._id": 0,
                     "instructors.__v": 0,
+                    "courses.__v":0,
+                    "courses.department":0,
+                    "courses.updatedAt":0,
+                    "courses.createdAt":0,
                     __v: 0,
                 },
             },
@@ -75,6 +79,10 @@ export async function getAllDepartments(req: Request, res: Response) {
                     "instructors.departmentId": 0,
                     "instructors._id": 0,
                     "instructors.__v": 0,
+                    "courses.__v":0,
+                    "courses.department":0,
+                    "courses.updatedAt":0,
+                    "courses.createdAt":0,
                     __v: 0,
                 },
             },
@@ -114,7 +122,7 @@ export async function addDepartment(req: Request, res: Response) {
  * This will be only used when the head of the department is changed
  * @param req Department Name, Head of the Department InstructorId
  */
-export async function updateDepartmentDetails(req: Request, res: Response) {
+export async function addHOD(req: Request, res: Response) {
     try {
         const session = await mongoose.startSession();
         session.startTransaction();
@@ -130,6 +138,9 @@ export async function updateDepartmentDetails(req: Request, res: Response) {
         });
         if (!headInstructor) {
             throw new Error("Instructor not Found");
+        }
+        if(headInstructor.departmentId.toString() !== department[0]._id.toString()){
+            throw new Error("Instructor not part of the department")
         }
         await Department.findOneAndUpdate(
             { name: req.params.departmentName },

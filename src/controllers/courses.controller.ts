@@ -66,8 +66,8 @@ export async function getAllCoursesDetails(req: Request, res: Response) {
  */
 export async function addCourse(req: Request, res: Response) {
     try {
-        const { title, description, creditScore, instructorId, department } = req.body;
-        if(!title || !description || !creditScore || !instructorId) {
+        const { title, description, creditScore, instructorId, department, courseId } = req.body;
+        if(!title || !description || !creditScore || !instructorId || !courseId) {
             throw new Error("Please fill all the fields");
         }
 
@@ -80,18 +80,21 @@ export async function addCourse(req: Request, res: Response) {
         if(!dept) {
             throw new Error("Department not Found, wrong department name");
         }
+        // await Department.findOneAndUpdate({ name: departmentName }, { $push: { instructors: instructor._id } });
+        // const newDept = await Department.updateOne({name: department}, {...department, courses: [...department.courses, title]}, {new: true});
         
-        const newDept = await Department.updateOne({name: department}, {...department, courses: [...department.courses, title]}, {new: true});
-
-
+        
         const newCourse = await Course.create({
             title,
             description,
             creditScore,
             instructor: instructor._id,
-            department: dept._id
-        })
+            department: dept._id,
+            courseId
+        });
 
+        await Department.updateOne({name: department}, {$push: { courses: newCourse._id }}, {new: true});
+        
         res.status(201).json({ message: "Course created, also added the course in the resp. Department", addedCourse: newCourse });
 
     } catch (error: any) {
