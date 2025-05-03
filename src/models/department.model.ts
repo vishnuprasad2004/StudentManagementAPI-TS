@@ -20,8 +20,10 @@ const DepartmentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Course"
     }],
-
-    
+    students: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Student"
+    }],
 });
 
 const Department = mongoose.models.departments || mongoose.model('departments', DepartmentSchema);

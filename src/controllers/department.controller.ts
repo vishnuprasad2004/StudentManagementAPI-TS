@@ -5,16 +5,64 @@ import mongoose from "mongoose";
 
 export async function getDepartment(req: Request, res: Response) {
     try {
-        // const department = await Department.find({ name: req.params.departmentName })
-        //     .populate("instructors")
-        //     .populate("courses")
-        //     .exec();
         const department = await Department.aggregate([
             {
                 $match: {
                     name: req.params.departmentName,
                 },
             },
+            {
+                $lookup: {
+                    from: "instructors",
+                    localField: "instructors",
+                    foreignField: "_id",
+                    as: "instructors",
+                },
+            },
+            {
+                $lookup: {
+                    from: "courses",
+                    localField: "courses", 
+                    foreignField: "_id", 
+                    as: "courses",
+                },
+            },
+            {
+                $lookup: {
+                    from: "students",
+                    localField: "students", 
+                    foreignField: "_id", 
+                    as: "students", 
+                },
+            },
+            {
+                $addFields: {
+                    numberOfStudents: { $size: "$students" },
+                    numberOfCourses: { $size: "$courses" },
+                    numberOfInstructors: { $size: "$instructors" },
+                }
+            },
+            {
+                $unset: ["instructors.departmentId", "instructors._id", "instructors.__v", "courses.__v", "courses.department",
+                    "courses.updatedAt", "courses.createdAt", "courses.description", "students.__v", "students.department",
+                    "students.password", "students.createdAt", "students.updatedAt", "__v"
+                ]
+            }, 
+        ]).limit(1);
+        if (department.length == 0) {
+            throw new Error("Department not Found");
+        }
+        console.log(department);
+        res.status(200).json({data: department[0], message: "Department Data found"});
+    } catch (error: any) {
+        console.log(error);
+        res.status(404).json({ message: error.message, data: {} });
+    }
+}
+
+export async function getAllDepartments(req: Request, res: Response) {
+    try {
+        const departments = await Department.aggregate([
             {
                 $lookup: {
                     from: "instructors",
@@ -32,70 +80,36 @@ export async function getDepartment(req: Request, res: Response) {
                 },
             },
             {
-                $project: {
-                    "instructors.departmentId": 0,
-                    "instructors._id": 0,
-                    "instructors.__v": 0,
-                    "courses.__v":0,
-                    "courses.department":0,
-                    "courses.updatedAt":0,
-                    "courses.createdAt":0,
-                    __v: 0,
-                },
-            },
-        ]);
-        if (department.length == 0) {
-            throw new Error("Department not Found");
-        }
-        console.log(department);
-        res.status(200).json(department);
-    } catch (error: any) {
-        console.log(error);
-        res.status(404).json({ message: error.message });
-    }
-}
-
-export async function getAllDepartments(req: Request, res: Response) {
-    try {
-        const departments = await Department.aggregate([
-            {
                 $lookup: {
-                    from: "departments",
-                    localField: "instructors",
-                    foreignField: "_id",
-                    as: "instructors",
+                    from: "students",
+                    localField: "students", 
+                    foreignField: "_id", 
+                    as: "students", 
                 },
             },
             {
-                $lookup: {
-                    from: "courses", // Lookup from the courses collection
-                    localField: "courses", // The field in departments that holds course IDs
-                    foreignField: "_id", // The field in courses that matches those IDs
-                    as: "courses", // The resulting array of course documents
-                },
+                $addFields: {
+                    numberOfStudents: { $size: "$students" },
+                    numberOfCourses: { $size: "$courses" },
+                    numberOfInstructors: { $size: "$instructors" },
+                }
             },
             {
-                $project: {
-                    "instructors.departmentId": 0,
-                    "instructors._id": 0,
-                    "instructors.__v": 0,
-                    "courses.__v":0,
-                    "courses.department":0,
-                    "courses.updatedAt":0,
-                    "courses.createdAt":0,
-                    __v: 0,
-                },
-            },
+                $unset: ["instructors.departmentId", "instructors._id", "instructors.__v", "courses.__v", "courses.department",
+                    "courses.updatedAt", "courses.createdAt", "courses.description", "students.__v", "students.department",
+                    "students.password", "students.createdAt", "students.updatedAt", "__v"
+                ]
+            }
         ]);
         if (departments.length == 0) {
             throw new Error("Departments not Found");
         }
         console.log(departments);
-        res.status(200).json(departments);
+        res.status(200).json({data: departments, message: "All Departments Data found"});
     } catch (error: any) {
 
         console.log(error.message);
-        res.status(404).json({ message: error.message });
+        res.status(500).json({ message: error.message, data: [] });
     }
 }
 

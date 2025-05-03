@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Student from "../models/student.model";
+import Department from "../models/department.model";
 
 type StudentData = {
     name: string;
@@ -8,11 +9,19 @@ type StudentData = {
     department: string;
     gender: string;
     cgpa: Number;
+    password: string;
 };
 
-export async function getStudent(req: Request, res: Response) {
+export async function getStudent(req: any, res: Response) {
     try {
-        //
+        
+        const user = req.user;
+        if(user.role === "student" && user.rollno !== req.params.rollno) {
+            res.status(403).json({message: 'Forbidden Access: You are not authorized to access this student data', data: {}});
+            return;
+        }
+        // if the user is an instructor, then he can access the student data of his students only
+
         const student = await Student.findOne({ rollno: req.params.rollno });
         if (!student) {
             throw new Error(`Student not found with ${req.params.rollno}`);
@@ -23,7 +32,7 @@ export async function getStudent(req: Request, res: Response) {
     } catch (error: any) {
 
         console.log(error.message);
-        res.status(404).json({ message: error.message, data: [] });
+        res.status(404).json({ message: error.message, data: {} });
     }
 }
 
@@ -111,19 +120,32 @@ export async function getStudentsMetaData(req: Request, res: Response) {
 export async function createStudent(req: Request, res: Response) {
     try {
         // get the data
-        const { name, rollno, department, email, gender, cgpa }: StudentData = req.body;
+        const { name, rollno, department, email, gender, cgpa, password }: StudentData = req.body;
         if (!name || !email || !rollno || !department) {
             throw new Error("All fields are Mandatory!!")
+        }
+        // check if the student already exists
+        const student = await Student.findOne({ rollno });
+        if (student) {
+            throw new Error(`Student already exists with rollno ${rollno}`);
+        }
+        // check if the department exists
+        const departmentExists = await Department.findOne({ name: department });
+        if (!departmentExists) {
+            throw new Error(`Department not found with name ${department}`);
         }
         // create the student in the db
         const newStudent = await Student.create({
             name,
             email,
             rollno,
-            department,
             gender,
-            cgpa
-        });
+            cgpa,
+            password,
+            department: departmentExists._id
+        })
+        // add the student to the department
+        await Department.findOneAndUpdate({ name: department }, { $push: { students: newStudent._id } }, { new: true });
         res.status(201).json({ message: "Created a new student", data: newStudent });
     } catch (error: any) {
         console.log(error.message);

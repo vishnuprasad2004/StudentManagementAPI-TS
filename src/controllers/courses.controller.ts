@@ -6,17 +6,17 @@ import Department from '../models/department.model';
 
 export async function getCourseDetails(req: Request, res: Response) {
     try {
-        const course = await Course.find({ name: req.params.name });
+        const course = await Course.findOne({ courseId: req.params.id });
         if (course.length == 0) {
             throw new Error("Course not Found");
         }
         console.log(course);
-        res.status(200).json(course);
+        res.status(200).json({data: course, message: "Course found"});
 
     } catch (error: any) {
 
         console.log(error.message);
-        res.status(404).json({ message: error.message });
+        res.status(404).json({ message: error.message, data: {} });
     }
 }
 
@@ -28,12 +28,12 @@ export async function getAllCoursesDetails(req: Request, res: Response) {
             throw new Error("Courses not Found");
         }
         console.log(courses);
-        res.status(200).json(courses);
+        res.status(200).json({data: courses, message: "Courses found"});
 
     } catch (error: any) {
 
         console.log(error.message);
-        res.status(404).json({ message: error.message });
+        res.status(404).json({ message: error.message, data: [] });
     }
 }
 

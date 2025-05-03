@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
 
 const StudentSchema = new mongoose.Schema({
     name: {
@@ -28,9 +29,9 @@ const StudentSchema = new mongoose.Schema({
         required: [true, "Please add the Roll Number"],
         validate: {
             validator: function (v: string) {
-                return /^\d{2}[a-z]{2,7}\d{3,4}$/.test(v);
+                return /^\d{2}[A-Z]{2,7}\d{3,4}$/.test(v);
             },
-            message: (props: any) => `${props.value} is not a valid official email!`
+            message: (props: any) => `${props.value} is not a valid official rollno!`
         }
         
     },
@@ -49,11 +50,21 @@ const StudentSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please add a password"],
         min: 4
+    },
+    role: {
+        type: String,
+        default: "student",
     }
 }, {
     timestamps: true
 });
 
+StudentSchema.pre("save", async function (next) {
+    if (this.isModified("password")) {
+        this.password = await bcrypt.hash(this.password, 10);
+    }
+    next();
+})
 
 const Student = mongoose.models.users || mongoose.model('students', StudentSchema);
 

@@ -42,8 +42,8 @@ export async function getAllInstructors(req: Request, res: Response) {
  */
 export async function createInstructor(req: Request, res: Response) {
     try {
-        const { instructorId, name, email, departmentName } = req.body;
-        if ([instructorId, name, email, departmentName].some((e) => e === undefined)) {
+        const { instructorId, name, email, departmentName, password } = req.body;
+        if ([instructorId, name, email, departmentName, password].some((e) => e === undefined)) {
             throw new Error("Please provide all the details");
         }
 
@@ -57,7 +57,7 @@ export async function createInstructor(req: Request, res: Response) {
         }
 
         
-        const instructor = await Instructor.create({ instructorId, name, email, departmentId: department._id });
+        const instructor = await Instructor.create({ instructorId, name, email, departmentId: department._id, password });
         console.log(instructor);
 
         await Department.findOneAndUpdate({ name: departmentName }, { $push: { instructors: instructor._id } });
@@ -73,3 +73,6 @@ export async function createInstructor(req: Request, res: Response) {
         res.status(400).json({ message: error.message });
     }
 }
+
+// TODO: update instructor details updateInstructor()
+// TODO: delete instructor deleteInstructor()
