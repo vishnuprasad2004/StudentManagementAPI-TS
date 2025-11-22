@@ -93,7 +93,7 @@ export async function addCourse(req: Request, res: Response) {
             courseId
         });
 
-        await Department.updateOne({name: department}, {$push: { courses: newCourse._id }}, {new: true});
+        await Department.updateOne({name: department}, {$push: { courses: newCourse._id }});
         
         res.status(201).json({ message: "Course created, also added the course in the resp. Department", addedCourse: newCourse });
 

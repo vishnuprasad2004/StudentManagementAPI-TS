@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Model } from "mongoose";
 
 const DepartmentSchema = new mongoose.Schema({
     name: {
@@ -26,6 +26,12 @@ const DepartmentSchema = new mongoose.Schema({
     }],
 });
 
-const Department = mongoose.models.departments || mongoose.model('Department', DepartmentSchema);
+let Department: Model<any>;
+
+if (mongoose.models && (mongoose.models as any).Department) {
+    Department = (mongoose.models as any).Department as Model<any>;
+} else {
+    Department = (mongoose.model as any)("Department", DepartmentSchema);
+}
 
 export default Department;

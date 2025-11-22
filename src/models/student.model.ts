@@ -1,5 +1,20 @@
-import mongoose from "mongoose";
+// ...existing code...
+import mongoose, { Model } from "mongoose";
 import bcrypt from "bcryptjs";
+
+export interface IStudent {
+    _id: mongoose.Types.ObjectId;
+    name: string;
+    email: string;
+    gender: string;
+    rollno: string;
+    department: mongoose.Types.ObjectId;
+    cgpa: number;
+    password: string;
+    role: string;
+}
+
+export type StudentDocument = IStudent & mongoose.Document;
 
 const StudentSchema = new mongoose.Schema({
     name: {
@@ -36,7 +51,7 @@ const StudentSchema = new mongoose.Schema({
         
     },
     department: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Department",
         required: [true, "Please add the department"],
     },
@@ -59,13 +74,20 @@ const StudentSchema = new mongoose.Schema({
     timestamps: true
 });
 
-StudentSchema.pre("save", async function (next) {
+StudentSchema.pre("save", async function (this: StudentDocument, next) {
     if (this.isModified("password")) {
         this.password = await bcrypt.hash(this.password, 10);
     }
     next();
 })
 
-const Student = mongoose.models.users || mongoose.model('Student', StudentSchema);
+
+let Student: Model<StudentDocument>;
+
+if (mongoose.models && (mongoose.models as any).Student) {
+    Student = (mongoose.models as any).Student as Model<StudentDocument>;
+} else {
+    Student = mongoose.model<StudentDocument>("Student", StudentSchema);
+}
 
 export default Student;

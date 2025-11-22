@@ -37,7 +37,12 @@ const CourseSchema = new mongoose.Schema({
     
 }, { timestamps: true });
 
+let Course: mongoose.Model<any>;
 
-const Course = mongoose.models.users || mongoose.model('Course', CourseSchema);
+if (mongoose.models && (mongoose.models as any).Course) {
+    Course = (mongoose.models as any).Course as mongoose.Model<any>;
+} else {
+    Course = (mongoose.model as any)("Course", CourseSchema) as mongoose.Model<any>;
+}
 
 export default Course;

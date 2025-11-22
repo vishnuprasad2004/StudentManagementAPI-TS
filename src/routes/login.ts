@@ -23,7 +23,14 @@ async function login(req: Request, res: Response) {
             return res.json({ token });
         }
 
-        const user = (await Student.findOne({ email })) || (await Instructor.findOne({ email }));
+        // perform queries sequentially to avoid TS2590 union type explosion
+        const student = await Student.findOne({ email }) as any;
+        let user: any = student;
+        if (!user) {
+            const instructor = await Instructor.findOne({ email }) as any;
+            user = instructor;
+        }
+
         if (!user) return res.status(404).json({ message: "Invalid Email" });
 
         const isValid = await bcrypt.compare(password, user.password);
@@ -39,7 +46,7 @@ async function login(req: Request, res: Response) {
             process.env.JWT_SECRET!,
             { expiresIn: "1h" }
         );
-		
+        
         res.json({ token });
     
 	} catch (error: any) {
