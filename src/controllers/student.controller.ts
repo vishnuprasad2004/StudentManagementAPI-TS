@@ -145,7 +145,7 @@ export async function createStudent(req: Request, res: Response) {
             department: departmentExists._id
         })
         // add the student to the department
-        await Department.findOneAndUpdate({ name: department }, { $push: { students: newStudent._id } }, { new: true });
+        await Department.findOneAndUpdate({ name: department }, { $push: { students: newStudent._id } });
         res.status(201).json({ message: "Created a new student", data: newStudent });
     } catch (error: any) {
         console.log(error.message);
@@ -161,7 +161,7 @@ export async function updateStudent(req: Request, res: Response) {
         if (!student) {
             throw new Error(`Student not found ${req.params.rollno}`);
         }
-        const updatedStudent = await Student.updateOne({ rollno: req.params.rollno }, req.body, { new: true });
+        const updatedStudent = await Student.updateOne({ rollno: req.params.rollno }, req.body);
         res.status(200).json({ message: `update student data with ${req.params.rollno}`, data: updatedStudent });
 
     } catch (error: any) {

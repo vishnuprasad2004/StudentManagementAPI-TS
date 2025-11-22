@@ -66,6 +66,6 @@ StudentSchema.pre("save", async function (next) {
     next();
 })
 
-const Student = mongoose.models.users || mongoose.model('students', StudentSchema);
+const Student = mongoose.models.users || mongoose.model('Student', StudentSchema);
 
 export default Student;

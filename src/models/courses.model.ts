@@ -38,6 +38,6 @@ const CourseSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 
-const Course = mongoose.models.users || mongoose.model('courses', CourseSchema);
+const Course = mongoose.models.users || mongoose.model('Course', CourseSchema);
 
 export default Course;

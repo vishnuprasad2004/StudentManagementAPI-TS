@@ -51,6 +51,6 @@ InstructorSchema.pre("save", async function (next) {
     next();
 })
 
-const Instructor = mongoose.models.instructors || mongoose.model('instructors', InstructorSchema);
+const Instructor = mongoose.models.instructors || mongoose.model('Instructor', InstructorSchema);
 
 export default Instructor;
