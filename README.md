@@ -1,6 +1,23 @@
-# Student Management API in Typescript
+# 🏫 University Management System
 
-This API allows for the management of student records, including creating, reading, updating, and deleting student information.
+This API provides a comprehensive solution for managing student records. It supports operations to create, retrieve, update, and delete student information, along with advanced query capabilities for filtering data based on specific criteria such as department and gender.
+
+
+## Schema for the project
+<img alt="schema" src="./schema.png" />
+
+
+## Tools & Technologies
+<p>
+<img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
+<img src="https://img.shields.io/badge/express.js-%23404d59.svg?style=for-the-badge&logo=express&logoColor=%2361DAFB">
+<img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white">
+<img src="https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white">
+<img src="https://img.shields.io/badge/-jest-%23C21325?style=for-the-badge&logo=jest&logoColor=white">
+<img src="https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white">
+
+</p>
+
 
 ## Endpoints
 
